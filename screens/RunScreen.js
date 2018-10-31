@@ -1,15 +1,17 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView} from 'react-navigation';
 
-export default class HomeScreen extends React.Component {
+export default class RunScreen extends React.Component {
   static navigationOptions = {
     header: null
+    //title: 'Run'
   };
 
   render() {
     return (
       <View style={styles.centered}>
-        <Text>hello world</Text>
+        <Text>Run screen</Text>
       </View>
     );
   }
