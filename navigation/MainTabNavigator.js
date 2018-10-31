@@ -43,6 +43,6 @@ RunStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  RunStack
+  RunStack,
+  HomeStack
 });

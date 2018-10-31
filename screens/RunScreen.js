@@ -3,6 +3,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import Numbers from '../components/RunScreen/Numbers';
 import Controls from '../components/RunScreen/Controls';
+import {Location, Permissions} from 'expo';
 
 export default class RunScreen extends React.Component {
   static navigationOptions = {
@@ -12,6 +13,20 @@ export default class RunScreen extends React.Component {
 
   state = {
     mode: 'numbers'
+  };
+
+  componentDidMount() {
+    this._getLocationAsync();
+  }
+
+  _getLocationAsync = async () => {
+    let {status} = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      console.log(error);
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location);
   };
 
   toggleMode = () => {
