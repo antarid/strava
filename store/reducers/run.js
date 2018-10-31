@@ -12,6 +12,8 @@ export default (state = init, action) => {
     case 'START_RUN':
       return {...state, isStarted: true};
     case 'PAUSE_RUN':
+      return {...state, isPaused: true};
+    case 'UNPAUSE_RUN':
       return {...state, isPaused: false};
     case 'STOP_RUN':
       return {...state, isPaused: false, isStarted: false};

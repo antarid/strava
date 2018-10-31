@@ -10,11 +10,19 @@ export default class RunScreen extends React.Component {
     //title: 'Run'
   };
 
+  state = {
+    mode: 'numbers'
+  };
+
+  toggleMode = () => {
+    this.setState({mode: this.state.mode === 'numbers' ? 'map' : 'numbers'});
+  };
+
   render() {
     return (
       <View style={styles.centered}>
         <Numbers />
-        <Controls />
+        <Controls toggleMode={this.toggleMode} mode={this.state.mode} />
       </View>
     );
   }
