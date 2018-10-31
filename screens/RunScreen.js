@@ -1,6 +1,8 @@
 import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
+import Numbers from '../components/RunScreen/Numbers';
+import Controls from '../components/RunScreen/Controls';
 
 export default class RunScreen extends React.Component {
   static navigationOptions = {
@@ -11,7 +13,8 @@ export default class RunScreen extends React.Component {
   render() {
     return (
       <View style={styles.centered}>
-        <Text>Run screen</Text>
+        <Numbers />
+        <Controls />
       </View>
     );
   }
