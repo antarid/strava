@@ -6,11 +6,21 @@ const indicators = ['pace', 'time', 'distance'];
 
 export default class Numbers extends React.Component {
   state = {
-    activeIndicator: 'pace',
-    data: {
-      pace: '5:50',
-      time: '28:35',
-      distance: '5.34'
+    activeIndicator: 'pace'
+  };
+  getStringValueOfProp = propName => {
+    const prop = this.props.params[propName];
+    switch (propName) {
+      case 'time':
+        let seconds = prop % 60;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        let minutes = parseInt(prop / 60) % 60;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        let hours = parseInt(prop / 3600) % 24;
+        hours = hours < 10 ? '0' + hours : hours;
+        return `${hours !== '00' ? hours + ':' : ''}${minutes}:${seconds}`;
+      default:
+        return prop;
     }
   };
   render() {
@@ -18,7 +28,7 @@ export default class Numbers extends React.Component {
       <Number
         active={true}
         name={this.state.activeIndicator}
-        value={this.state.data[this.state.activeIndicator]}
+        value={this.getStringValueOfProp(this.state.activeIndicator)}
       />
     );
     const inactiveIndicators = indicators
@@ -30,7 +40,7 @@ export default class Numbers extends React.Component {
           <Number
             key={index}
             name={indicator}
-            value={this.state.data[indicator]}
+            value={this.getStringValueOfProp(indicator)}
           />
         </TouchableOpacity>
       ));

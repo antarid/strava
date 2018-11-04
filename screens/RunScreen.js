@@ -19,17 +19,26 @@ class RunScreen extends React.Component {
   };
 
   componentDidMount() {
-    this._getLocationAsync();
+    console.log('here');
+    this.getLocation();
   }
 
-  _getLocationAsync = async () => {
-    let {status} = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      console.log(error);
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
-    console.log(location);
+  getLocation = () => {
+    Permissions.askAsync(Permissions.LOCATION)
+      .then(({status}) => {
+        if (status !== 'granted') throw new Error();
+      })
+      .then(() =>
+        Location.watchPositionAsync(
+          {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeInterval: 2000,
+            distanceInterval: 5
+          },
+          coords => console.log(coords)
+        )
+      );
   };
 
   toggleMode = () => {
@@ -40,7 +49,8 @@ class RunScreen extends React.Component {
     let content;
     if (!this.props.runIsStarted) content = <Invintation />;
     else {
-      if (this.state.mode === 'numbers') content = <Numbers />;
+      if (this.state.mode === 'numbers')
+        content = <Numbers params={this.props.params} />;
       else content = <Map />;
     }
 
@@ -80,5 +90,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(state => ({
-  runIsStarted: state.run.isStarted
+  runIsStarted: state.run.status.isStarted,
+  params: state.run.params
 }))(RunScreen);
