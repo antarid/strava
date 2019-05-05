@@ -1,15 +1,17 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import { connect } from 'react-redux';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Number from './Number';
 
 const indicators = ['pace', 'time', 'distance'];
 
-export default class Numbers extends React.Component {
+class Numbers extends React.Component {
   state = {
     activeIndicator: 'pace'
   };
+
   getStringValueOfProp = propName => {
-    const prop = this.props.params[propName];
+    const prop = this.props[propName];
     switch (propName) {
       case 'time':
         let seconds = prop % 60;
@@ -23,6 +25,7 @@ export default class Numbers extends React.Component {
         return prop;
     }
   };
+
   render() {
     const activeIndicator = (
       <Number
@@ -35,10 +38,10 @@ export default class Numbers extends React.Component {
       .filter(indicator => indicator != this.state.activeIndicator)
       .map((indicator, index) => (
         <TouchableOpacity
-          onPress={() => this.setState({activeIndicator: indicator})}
+          key={index}
+          onPress={() => this.setState({ activeIndicator: indicator })}
         >
           <Number
-            key={index}
             name={indicator}
             value={this.getStringValueOfProp(indicator)}
           />
@@ -53,6 +56,10 @@ export default class Numbers extends React.Component {
     );
   }
 }
+
+export default connect(state => ({
+  ...state.run.params
+}))(Numbers);
 
 const styles = StyleSheet.create({
   container: {
