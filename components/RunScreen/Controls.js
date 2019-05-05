@@ -1,15 +1,20 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import RoundButton from '../RoundButton';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import RoundButton from '../RoundButton';
+import * as runActions from '../../store/actions/run';
 
 class Controls extends React.Component {
-  startButton = () => (
-    <RoundButton key={0} name="play" onPress={this.props.startRun} />
+  startRunButton = () => (
+    <RoundButton key={0} name="play" onPress={this.props.runActions.startRun} />
   );
 
   pauseRunButton = () => {
-    const { isPaused, unpauseRun, pauseRun } = this.props;
+    const {
+      isPaused,
+      runActions: { unpauseRun, pauseRun }
+    } = this.props;
     return (
       <RoundButton
         key={1}
@@ -20,7 +25,11 @@ class Controls extends React.Component {
   };
 
   stopRunButton = () => (
-    <RoundButton key={2} name="square" onPress={this.props.stopRun} />
+    <RoundButton
+      key={2}
+      name="square"
+      onPress={this.props.runActions.stopRun}
+    />
   );
 
   toggleModeButton = () => (
@@ -33,11 +42,10 @@ class Controls extends React.Component {
 
   render() {
     const { isStarted, isPaused } = this.props;
-
     let content;
-    if (isStarted) content = [this.startRunButton()];
+    if (!isStarted) content = [this.startRunButton()];
     else {
-      if (isPaused) content = [this.pauseRunButton(), this.toggleModeButton()];
+      if (!isPaused) content = [this.pauseRunButton(), this.toggleModeButton()];
       else
         content = [
           this.pauseRunButton(),
@@ -62,12 +70,9 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
-    ...state.run
+    ...state.run.status
   }),
   dispatch => ({
-    startRun: () => dispatch({ type: 'START_RUN' }),
-    pauseRun: () => dispatch({ type: 'PAUSE_RUN' }),
-    unpauseRun: () => dispatch({ type: 'UNPAUSE_RUN' }),
-    stopRun: () => dispatch({ type: 'STOP_RUN' })
+    runActions: bindActionCreators(runActions, dispatch)
   })
 )(Controls);
