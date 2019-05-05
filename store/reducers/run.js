@@ -1,9 +1,6 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
+import { actionTypes } from '../actions/run';
 
-const statusInintState = {
-  isStarted: false,
-  isPaused: false
-};
 const paramsInitState = {
   time: 0,
   distance: 0,
@@ -14,30 +11,64 @@ const paramsInitState = {
 const params = (state = paramsInitState, action) => {
   switch (action.type) {
     case 'SET_RUN_DISTANCE':
-      return {...state, distance: action.distance};
+      return { ...state, distance: action.distance };
     case 'SET_RUN_PACE':
-      return {...state, distance: action.distance};
+      return { ...state, distance: action.distance };
     case 'SET_RUN_TIME':
-      return {...state, distance: action.distance};
+      return { ...state, distance: action.distance };
     case 'INCREMENT_RUN_TIME':
-      return {...state, time: state.time + 1};
+      return { ...state, time: state.time + 1 };
     case 'ADD_COORD_TO_ROUTE':
-      return {...state, route: [...state.route, action.coord]};
+      return { ...state, route: [...state.route, action.coord] };
     default:
       return state;
   }
 };
 
-const status = (state = statusInintState, action) => {
+const statusInitState = {
+  isStarted: false,
+  isPaused: false,
+  timeInterval: null, // for setInterval, which runs every second
+  historyInterval: null // for setInterval, where Location is obtained
+};
+
+const status = (state = statusInitState, action) => {
   switch (action.type) {
-    case 'START_RUN':
-      return {...state, isStarted: true};
-    case 'PAUSE_RUN':
-      return {...state, isPaused: true};
-    case 'UNPAUSE_RUN':
-      return {...state, isPaused: false};
-    case 'STOP_RUN':
-      return {...state, isPaused: false, isStarted: false};
+    case actionTypes.START_RUN:
+      return { ...state, isStarted: true };
+    case actionTypes.PAUSE_RUN:
+      return {
+        ...state,
+        isPaused: true,
+        timeInterval: null,
+        historyInterval: null
+      };
+    case actionTypes.UNPAUSE_RUN:
+      return {
+        ...state,
+        isPaused: false,
+        timeInterval: action.timeInterval,
+        historyInterval: action.timeInterval
+      };
+    case actionTypes.STOP_RUN:
+      return { ...state, isStarted: false };
+    default:
+      return state;
+  }
+};
+
+const historyInitState = [];
+
+const history = (state = historyInitState, action) => {
+  switch (action.type) {
+    case actionTypes.HISTORY_INTERVAL_PASSED:
+      return state.map((historySequence, index) =>
+        index === state.length - 1
+          ? [...historySequence, action.position]
+          : historySequence
+      );
+    case actionTypes.UNPAUSE_RUN: // when we unpause run, we create another sequence of history
+      return [...state, []];
     default:
       return state;
   }
@@ -45,5 +76,6 @@ const status = (state = statusInintState, action) => {
 
 export default combineReducers({
   status,
-  params
+  params,
+  history
 });
